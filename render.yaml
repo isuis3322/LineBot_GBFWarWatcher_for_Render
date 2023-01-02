@@ -2,7 +2,7 @@ services:
 - type: web
   name: line-bot-python-flask-NBB
   env: python
-  buildCommand: cd src;pip install gunicorn -r requirements.txt
+  buildCommand: cd src;pip install --upgrade gunicorn -r requirements.txt
   startCommand: cd src;gunicorn app_with_handler:app
   plan: free
   autoDeploy: false
