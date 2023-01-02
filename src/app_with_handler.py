@@ -27,6 +27,12 @@ from linebot.models import (
     MessageEvent, TextMessage, TextSendMessage,
 )
 
+from google.auth.transport.requests import Request
+from google.oauth2.credentials import Credentials
+from google_auth_oauthlib.flow import InstalledAppFlow
+from googleapiclient.discovery import build
+from googleapiclient.errors import HttpError
+
 app = Flask(__name__)
 
 # get channel_secret and channel_access_token from your environment variable
@@ -37,6 +43,12 @@ if channel_secret is None:
     sys.exit(1)
 if channel_access_token is None:
     print('Specify LINE_CHANNEL_ACCESS_TOKEN as environment variable.')
+    sys.exit(1)
+
+# get google sheet id from your environment variable
+spreadsheetId = os.getenv('GOOGLE_SHEET_ID', None)
+if spreadsheetId is None:
+    print('Specify GOOGLE_SHEET_ID as environment variable.')
     sys.exit(1)
 
 line_bot_api = LineBotApi(channel_access_token)
