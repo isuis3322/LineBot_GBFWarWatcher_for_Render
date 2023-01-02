@@ -2,9 +2,8 @@ services:
 - type: web
   name: line-bot-python-flask-NBB
   env: python
-  repo: https://github.com/isuis3322/LineBot_GBFWarWatcher_for_Render
-  buildCommand: cd examples/flask-echo;pip install gunicorn -r requirements.txt
-  startCommand: cd examples/flask-echo;gunicorn app:app
+  buildCommand: cd src;pip install gunicorn -r requirements.txt
+  startCommand: cd src;gunicorn app_with_handler:app
   plan: free
   autoDeploy: false
   envVars:
