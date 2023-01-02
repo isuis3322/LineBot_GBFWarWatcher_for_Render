@@ -60,9 +60,13 @@ def callback():
 
     return 'OK'
 
+def is_text_command(text):
+    return text.startswith("!") or text.startswith("！")
 
 @handler.add(MessageEvent, message=TextMessage)
 def message_text(event):
+    if not is_text_command(event.message.text):
+        return
     line_bot_api.reply_message(
         event.reply_token,
         TextSendMessage(text=event.message.text)
