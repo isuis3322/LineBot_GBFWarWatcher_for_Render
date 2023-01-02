@@ -108,6 +108,65 @@ def test_google_sheet_read():
     except HttpError as err:
         print(err)
 
+def command_respond(event, command, command_list):
+    # find respond
+    for row in command_list:
+        command_type = row[2]
+        if command_type == '2' or command_type == '-2':
+            # text reply
+            keywords = row[1].split(',')
+            if command in keywords:
+                line_bot_api.reply_message(
+                    event.reply_token,
+                    TextSendMessage(text=row[0])
+                )
+                return
+        elif command_type == '3' or command_type == '-3':
+            # alias command
+            keywords = row[1].split(',')
+            if command in keywords:
+                command_respond(event, row[0], command_list)
+                return
+        elif command_type == '4' or command_type == '-4':
+            # upload imgur
+            # pic reply
+            keywords = row[1].split(',')
+            if command in keywords:
+                line_bot_api.reply_message(
+                    event.reply_token,
+                    TextSendMessage(text='upload pic: ' + event.message.text)
+                )
+                return
+        elif command_type == '5' or command_type == '-5':
+            # command list
+            keywords = row[1].split(',')
+            if command in keywords:
+                reply_text = ""
+                for row2 in command_list:
+                    if row2[2] == "2" or row2[2] == "4" or row2[2] == "5":
+                        reply_text = reply_text + '\n' + row2[1]
+                line_bot_api.reply_message(
+                    event.reply_token,
+                    TextSendMessage(text=reply_text)
+                )
+                return
+        elif command_type == '6' or command_type == '-6':
+            # pic reply
+            keywords = row[1].split(',')
+            if command in keywords:
+                url = row[0]
+                line_bot_api.reply_message(
+                    event.reply_token,
+                    ImageSendMessage(url, url)
+                )
+                return
+    
+    line_bot_api.reply_message(
+        event.reply_token,
+        TextSendMessage(text='command not found: ' + event.message.text)
+    )
+
+
 def command_parse(event, text):
     SCOPES = ['https://www.googleapis.com/auth/spreadsheets.readonly']
     SAMPLE_SPREADSHEET_ID = spread_sheet_id
@@ -127,61 +186,7 @@ def command_parse(event, text):
             print('No data found.')
             return
 
-        # find respond
-        for row in values:
-            command_type = row[2]
-            if command_type == '2' or command_type == '-2':
-                # text reply
-                keywords = row[1].split(',')
-                if text in keywords:
-                    line_bot_api.reply_message(
-                        event.reply_token,
-                        TextSendMessage(text=row[0])
-                    )
-                    return
-            elif command_type == '3' or command_type == '-3':
-                # alias command
-                keywords = row[1].split(',')
-                if text in keywords:
-                    line_bot_api.reply_message(
-                        event.reply_token,
-                        TextSendMessage(text='command alias: ' + event.message.text)
-                    )
-                    return
-            elif command_type == '4' or command_type == '-4':
-                # upload imgur
-                # pic reply
-                keywords = row[1].split(',')
-                if text in keywords:
-                    line_bot_api.reply_message(
-                        event.reply_token,
-                        TextSendMessage(text='upload pic: ' + event.message.text)
-                    )
-                    return
-            elif command_type == '5' or command_type == '-5':
-                # command list
-                keywords = row[1].split(',')
-                if text in keywords:
-                    line_bot_api.reply_message(
-                        event.reply_token,
-                        TextSendMessage(text='list command')
-                    )
-                    return
-            elif command_type == '6' or command_type == '-6':
-                # pic reply
-                keywords = row[1].split(',')
-                if text in keywords:
-                    url = row[0]
-                    line_bot_api.reply_message(
-                        event.reply_token,
-                        ImageSendMessage(url, url)
-                    )
-                    return
-        
-        line_bot_api.reply_message(
-            event.reply_token,
-            TextSendMessage(text='command not found: ' + event.message.text)
-        )
+        command_respond(event, text, values)
 
     except HttpError as err:
         print(err)
