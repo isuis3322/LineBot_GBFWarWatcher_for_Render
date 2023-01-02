@@ -13,3 +13,5 @@ services:
     sync: false
   - key: GOOGLE_SHEET_ID
     sync: false
+  - key: IMGUR_CLIENT_ID
+    sync: false

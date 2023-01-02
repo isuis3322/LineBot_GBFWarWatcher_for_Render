@@ -27,11 +27,15 @@ from linebot.models import (
     MessageEvent, TextMessage, TextSendMessage,
 )
 
+# google
 from google.auth.transport.requests import Request
 from google.oauth2.credentials import Credentials
 from google_auth_oauthlib.flow import InstalledAppFlow
 from googleapiclient.discovery import build
 from googleapiclient.errors import HttpError
+
+# imgur
+from imgurpython import ImgurClient
 
 app = Flask(__name__)
 
