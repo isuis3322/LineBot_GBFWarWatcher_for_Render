@@ -2,7 +2,7 @@ services:
 - type: web
   name: line-bot-python-flask-NBB
   env: python
-  buildCommand: cd src;pip install gunicorn -r requirements.txt;pip install --upgrade google-api-python-client google-auth-httplib2 google-auth-oauthlib
+  buildCommand: cd src;pip install gunicorn -r requirements.txt
   startCommand: cd src;gunicorn app_with_handler:app
   plan: free
   autoDeploy: false
