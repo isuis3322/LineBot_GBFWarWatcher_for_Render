@@ -151,6 +151,7 @@ def command_parse(event, text):
             elif command_type == '4' or command_type == '-4':
                 # upload imgur
                 # pic reply
+                keywords = row[1].split(',')
                 if text in keywords:
                     line_bot_api.reply_message(
                         event.reply_token,
@@ -159,6 +160,7 @@ def command_parse(event, text):
                     return
             elif command_type == '5' or command_type == '-5':
                 # command list
+                keywords = row[1].split(',')
                 if text in keywords:
                     line_bot_api.reply_message(
                         event.reply_token,
@@ -167,6 +169,7 @@ def command_parse(event, text):
                     return
             elif command_type == '6' or command_type == '-6':
                 # pic reply
+                keywords = row[1].split(',')
                 if text in keywords:
                     url = row[0]
                     line_bot_api.reply_message(
