@@ -34,6 +34,8 @@ from google_auth_oauthlib.flow import InstalledAppFlow
 from googleapiclient.discovery import build
 from googleapiclient.errors import HttpError
 
+from google.oauth2 import service_account
+
 # imgur
 from imgurpython import ImgurClient
 
@@ -100,9 +102,11 @@ def test_google_sheet_read():
         if creds and creds.expired and creds.refresh_token:
             creds.refresh(Request())
         else:
-            flow = InstalledAppFlow.from_client_secrets_file(
-                '../credentials.json', SCOPES)
-            creds = flow.run_local_server(port=0)
+            # flow = InstalledAppFlow.from_client_secrets_file(
+            #     '../credentials.json', SCOPES)
+            # creds = flow.run_local_server(port=0)
+            creds = service_account.Credentials.from_service_account_file(
+                    '../credentials.json', scopes=SCOPES)
         # Save the credentials for the next run
         with open('token.json', 'w') as token:
             token.write(creds.to_json())
