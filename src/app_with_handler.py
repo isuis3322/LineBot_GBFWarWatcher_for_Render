@@ -132,9 +132,10 @@ def command_respond(event, command, command_list):
             # pic reply
             keywords = row[1].split(',')
             if command in keywords:
+                url = row[0]
                 line_bot_api.reply_message(
                     event.reply_token,
-                    TextSendMessage(text='upload pic: ' + event.message.text)
+                    ImageSendMessage(url, url)
                 )
                 return
         elif command_type == '5' or command_type == '-5':
