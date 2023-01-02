@@ -24,7 +24,7 @@ from linebot.exceptions import (
     InvalidSignatureError
 )
 from linebot.models import (
-    MessageEvent, TextMessage, TextSendMessage,
+    MessageEvent, TextMessage, TextSendMessage, ImageSendMessage
 )
 
 # google
@@ -108,6 +108,82 @@ def test_google_sheet_read():
     except HttpError as err:
         print(err)
 
+def command_parse(event, text):
+    SCOPES = ['https://www.googleapis.com/auth/spreadsheets.readonly']
+    SAMPLE_SPREADSHEET_ID = spread_sheet_id
+    SAMPLE_RANGE_NAME = 'sheet1!A2:C'
+    creds = service_account.Credentials.from_service_account_file(
+                '../credentials.json', scopes=SCOPES)
+    try:
+        service = build('sheets', 'v4', credentials=creds)
+
+        # Call the Sheets API
+        sheet = service.spreadsheets()
+        result = sheet.values().get(spreadsheetId=SAMPLE_SPREADSHEET_ID,
+                                    range=SAMPLE_RANGE_NAME).execute()
+        values = result.get('values', [])
+
+        if not values:
+            print('No data found.')
+            return
+
+        # find respond
+        for row in values:
+            command_type = row[2]
+            if command_type == '2' or command_type == '-2':
+                # text reply
+                keywords = row[1].split(',')
+                if text in keywords:
+                    line_bot_api.reply_message(
+                        event.reply_token,
+                        TextSendMessage(text=row[0])
+                    )
+                    return
+            elif command_type == '3' or command_type == '-3':
+                # alias command
+                keywords = row[1].split(',')
+                if text in keywords:
+                    line_bot_api.reply_message(
+                        event.reply_token,
+                        TextSendMessage(text='command alias: ' + event.message.text)
+                    )
+                    return
+            elif command_type == '4' or command_type == '-4':
+                # upload imgur
+                # pic reply
+                if text in keywords:
+                    line_bot_api.reply_message(
+                        event.reply_token,
+                        TextSendMessage(text='upload pic: ' + event.message.text)
+                    )
+                    return
+            elif command_type == '5' or command_type == '-5':
+                # command list
+                if text in keywords:
+                    line_bot_api.reply_message(
+                        event.reply_token,
+                        TextSendMessage(text='list command')
+                    )
+                    return
+            elif command_type == '6' or command_type == '-6':
+                # pic reply
+                if text in keywords:
+                    url = row[0]
+                    line_bot_api.reply_message(
+                        event.reply_token,
+                        ImageSendMessage(url, url)
+                    )
+                    return
+        
+        line_bot_api.reply_message(
+            event.reply_token,
+            TextSendMessage(text='command not found: ' + event.message.text)
+        )
+
+    except HttpError as err:
+        print(err)
+
+
 @handler.add(MessageEvent, message=TextMessage)
 def message_text(event):
     if not is_text_command(event.message.text):
@@ -115,11 +191,7 @@ def message_text(event):
     if is_text_test_google(event.message.text):
         test_google_sheet_read()
         return
-    line_bot_api.reply_message(
-        event.reply_token,
-        TextSendMessage(text=event.message.text)
-    )
-
+    command_parse(event, event.message.text)
 
 if __name__ == "__main__":
     arg_parser = ArgumentParser(
