@@ -181,27 +181,27 @@ def command_parse(event, text):
                 '../credentials.json', scopes=SCOPES)
     try:
         if to_print_time_info == "1":
-            print('Build sheet service.')
+            print('Build sheet service.', flush=True)
         service = build('sheets', 'v4', credentials=creds)
 
         # Call the Sheets API
         if to_print_time_info == "1":
-            print('Spread sheet.')
+            print('Spread sheet.', flush=True)
         sheet = service.spreadsheets()
         if to_print_time_info == "1":
-            print('Get sheet.')
+            print('Get sheet.', flush=True)
         result = sheet.values().get(spreadsheetId=SAMPLE_SPREADSHEET_ID,
                                     range=SAMPLE_RANGE_NAME).execute()
         if to_print_time_info == "1":
-            print('Get value array.')
+            print('Get value array.', flush=True)
         values = result.get('values', [])
 
         if not values:
-            print('No data found.')
+            print('No data found.', flush=True)
             return
 
         if to_print_time_info == "1":
-            print('Find command responce.')
+            print('Find command responce.', flush=True)
         command_respond(event, text, values)
 
     except HttpError as err:
