@@ -112,7 +112,12 @@ def command_respond(event, command, command_list):
     # find respond
     for row in command_list:
         command_type = row[2]
-        if command_type == '2' or command_type == '-2':
+        if command_type == '1':
+            # ignore command
+            keywords = row[1].split(',')
+            if command in keywords:
+                return
+        elif command_type == '2' or command_type == '-2':
             # text reply
             keywords = row[1].split(',')
             if command in keywords:
