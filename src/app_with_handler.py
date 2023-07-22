@@ -167,7 +167,7 @@ def command_respond(event, command, command_list):
         TextSendMessage(text='command not found: ' + event.message.text)
     )
 
-
+to_print_time_info = os.getenv('PRINT_TIME_INFO', None)
 def command_parse(event, text):
     SCOPES = ['https://www.googleapis.com/auth/spreadsheets.readonly']
     SAMPLE_SPREADSHEET_ID = spread_sheet_id
@@ -175,18 +175,28 @@ def command_parse(event, text):
     creds = service_account.Credentials.from_service_account_file(
                 '../credentials.json', scopes=SCOPES)
     try:
+        if to_print_time_info == "1":
+            print('Build sheet service.')
         service = build('sheets', 'v4', credentials=creds)
 
         # Call the Sheets API
+        if to_print_time_info == "1":
+            print('Spread sheet.')
         sheet = service.spreadsheets()
+        if to_print_time_info == "1":
+            print('Get sheet.')
         result = sheet.values().get(spreadsheetId=SAMPLE_SPREADSHEET_ID,
                                     range=SAMPLE_RANGE_NAME).execute()
+        if to_print_time_info == "1":
+            print('Get value array.')
         values = result.get('values', [])
 
         if not values:
             print('No data found.')
             return
 
+        if to_print_time_info == "1":
+            print('Find command responce.')
         command_respond(event, text, values)
 
     except HttpError as err:
