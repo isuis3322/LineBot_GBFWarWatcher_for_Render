@@ -205,7 +205,7 @@ def command_parse(event, text):
 
         if to_print_time_info == "1":
             print('Find command responce.', flush=True)
-        command_respond(event, text, values)
+        command_respond(event, text.strip(), values)
 
     except HttpError as err:
         print(err)
