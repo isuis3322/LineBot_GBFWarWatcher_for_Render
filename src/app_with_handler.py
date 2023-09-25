@@ -81,7 +81,7 @@ def is_text_command(text):
     return text.startswith("&") or text.startswith("＆")
 
 def is_text_test_google(text):
-    return text.startswith("!tgoogle")
+    return text.startswith("&tgoogle")
 
 def test_google_sheet_read():
     SCOPES = ['https://www.googleapis.com/auth/spreadsheets.readonly']
