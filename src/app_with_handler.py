@@ -78,7 +78,7 @@ def callback():
     return 'OK'
 
 def is_text_command(text):
-    return text.startswith("!") or text.startswith("！")
+    return text.startswith("&") or text.startswith("＆")
 
 def is_text_test_google(text):
     return text.startswith("!tgoogle")
